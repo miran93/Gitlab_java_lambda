@@ -31,4 +31,4 @@ deploy:
   before_script:
     - pip install awscli
   script:
-    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://$CI_PROJECT_NAME.zip
+    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://$CI_PROJECT_NAME.zip --region $AWS_REGION
