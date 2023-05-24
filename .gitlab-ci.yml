@@ -1,0 +1,15 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: maven:3.8.1-openjdk-11
+  script:
+    - mvn clean install
+
+deploy:
+  stage: deploy
+  image: public.ecr.aws/bitnami/aws-cli:2.2.18
+  script:
+    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/my-app.jar --region $AWS_REGION
