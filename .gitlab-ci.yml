@@ -13,8 +13,8 @@ deploy:
   image: python:3.7
   script:
     - apt-get update && apt-get install -y zip
-    - zip -r lambda.zip target/*    # Assuming your JAR file is generated in the 'target' directory
+    - zip -r $CI_PROJECT_NAME.zip *    
     - pip install awscli
-    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://lambda.zip --region $AWS_REGION
+    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://$CI_PROJECT_NAME.zip --region $AWS_REGION
   only:
     - main
