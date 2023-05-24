@@ -1,34 +1,20 @@
 stages:
-  - archiving
   - build
   - deploy
 
-archive:
-  stage: archiving
-
-  before_script:
-    - apt-get update
-    - apt-get install zip -y
-
-  script:
-    - echo "Archiving lambda code"
-    - zip -r $CI_PROJECT_NAME.zip *
-
-  artifacts:
-    paths:
-      - $CI_PROJECT_NAME.zip
-
-
 build:
   stage: build
-  image: maven:3.8.1-openjdk-11
+  image: maven:latest
   script:
     - mvn clean install
 
 deploy:
   stage: deploy
-  image: python:latest
-  before_script:
-    - pip install awscli
+  image: python:3.7
   script:
-    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://$CI_PROJECT_NAME.zip --region $AWS_REGION
+    - apt-get update && apt-get install -y zip
+    - zip -r lambda.zip target/*    # Assuming your JAR file is generated in the 'target' directory
+    - pip install awscli
+    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://lambda.zip --region $AWS_REGION
+  only:
+    - main
